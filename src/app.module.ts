@@ -1,21 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { AppController } from './app.controller';
+import { PoliticiansModule } from './politicians/politicians.module';
 import { GlobalModule } from './common/global.module';
-import { ConfigService } from './common/services/config.service';
 import { HealthModule } from './health/health.module';
+import { SearchModule } from './common/search.module';
 
 @Module({
-  imports: [
-    GlobalModule,
-    ElasticsearchModule.registerAsync({
-      useFactory: async (configService: ConfigService) => ({
-        node: configService.get('ELASTICSEARCH_NODE'),
-      }),
-      inject: [ConfigService],
-    }),
-    HealthModule,
-  ],
+  imports: [GlobalModule, SearchModule, HealthModule, PoliticiansModule],
   controllers: [AppController],
 })
 export class AppModule {}
