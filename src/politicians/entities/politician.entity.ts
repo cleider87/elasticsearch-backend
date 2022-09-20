@@ -1,9 +1,3 @@
-/**
- * TRIENIOS_SUELDO
- * RETRIBUCIONMENSUAL
- * RETRIBUCIONANUAL
- **/
-
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class Politician {
