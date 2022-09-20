@@ -19,7 +19,7 @@ export class BulkController {
 
   @Post()
   @ApiConsumes('multipart/form-data')
-  @ApiBody({ description: 'Bulk update', type: UploadDto })
+  @ApiBody({ description: 'Bulk create', type: UploadDto })
   @HttpCode(HttpStatus.ACCEPTED)
   @UseInterceptors(
     FileInterceptor('file', {
