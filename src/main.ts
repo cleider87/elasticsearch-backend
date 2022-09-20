@@ -2,6 +2,7 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as compression from 'compression';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import {
@@ -39,6 +40,8 @@ async function bootstrap() {
       },
     );
   }
+
+  app.use(compression());
 
   app.use((req: Request, _res: Response, next) => {
     Logger.log(`${req.method} ${req.url}`);
