@@ -1,6 +1,6 @@
-import { SearchHit } from '@elastic/elasticsearch/lib/api/types';
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { castHits } from '../../common/utils/search.util';
 import { PageMetaDto } from '../../common/dtos/page-meta.dto';
 import { PageDto } from '../../common/dtos/page.dto';
 import { politiciansIndex } from '../constants/politicians.constant';
@@ -11,7 +11,128 @@ import { Politician } from '../entities/politician.entity';
 export class PoliticiansService {
   constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
+  public async createIndex() {
+    const checkIndex = await this.elasticsearchService.indices.exists({
+      index: politiciansIndex,
+    });
+
+    if (!checkIndex) {
+      await this.elasticsearchService.indices.create({
+        index: politiciansIndex,
+        body: {
+          mappings: {
+            properties: {
+              fullName: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              party: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              partyFilter: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              gender: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              occupation: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              occupationFilter: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              community: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              institution: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+              baseSalary: {
+                type: 'long',
+              },
+              monthlyPayment: {
+                type: 'long',
+              },
+              yearlyPayment: {
+                type: 'long',
+              },
+              complementSalary: {
+                type: 'long',
+              },
+              extraPay: {
+                type: 'long',
+              },
+              otherAllowancesAndIndemnities: {
+                type: 'long',
+              },
+              threeYearsSalary: {
+                type: 'long',
+              },
+              observations: {
+                type: 'text',
+                fields: {
+                  keyword: {
+                    type: 'keyword',
+                    ignore_above: 256,
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+  }
+
   public async create(politician: any) {
+    await this.createIndex();
     await this.elasticsearchService.index({
       index: politiciansIndex,
       body: politician,
@@ -75,7 +196,7 @@ export class PoliticiansService {
       itemCount: hits.total['value'],
       pageOptionsDto: searchPoliticiansDto,
     });
-    return new PageDto(hits.hits.map(this.castHits), pageMetaDto);
+    return new PageDto(hits.hits.map(castHits<Politician>), pageMetaDto);
   }
 
   public async getById(id) {
@@ -88,7 +209,7 @@ export class PoliticiansService {
       },
     });
 
-    return hits.hits.map(this.castHits)[0];
+    return hits.hits.map(castHits<Politician>)[0];
   }
 
   public async update(id: string, politician: Partial<Politician>) {
@@ -127,7 +248,14 @@ export class PoliticiansService {
     return null;
   }
 
-  private castHits(hit: SearchHit<Politician>): Politician {
-    return Object.assign({ id: hit._id }, hit._source);
+  public async bulkCreate(politicians) {
+    await this.createIndex();
+    const { errors, took } = await this.elasticsearchService.bulk({
+      operations: politicians,
+    });
+    if (errors) {
+      return false;
+    }
+    return took;
   }
 }
