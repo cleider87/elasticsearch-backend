@@ -5,8 +5,8 @@ export enum PoliticianMapping {
   gender = 'GENERO',
   occupation = 'CARGO',
   occupationFilter = 'CARGO_PARA_FILTRO',
-  community = 'CCAA',
   institution = 'INSTITUCION',
+  community = 'CCAA',
   baseSalary = 'SUELDOBASE_SUELDO',
   monthlyPayment = 'RETRIBUCIONMENSUAL',
   yearlyPayment = 'RETRIBUCIONANUAL',
@@ -14,5 +14,5 @@ export enum PoliticianMapping {
   extraPay = 'PAGASEXTRA_SUELDO',
   otherAllowancesAndIndemnities = 'OTRASDIETASEINDEMNIZACIONES_SUELDO',
   threeYearsSalary = 'TRIENIOS_SUELDO',
-  observations = 'Dedicación Exclusiva',
+  observations = 'OBSERVACIONES',
 }

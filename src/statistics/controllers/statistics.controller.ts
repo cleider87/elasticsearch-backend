@@ -16,4 +16,12 @@ export class StatisticsController {
   public async search(): Promise<StatisticsDto> {
     return this.statisticsService.getStatistics();
   }
+
+  @Get('parties')
+  @ApiOperation({
+    description: 'Get parties',
+  })
+  public async getParties() {
+    return this.statisticsService.getParties();
+  }
 }

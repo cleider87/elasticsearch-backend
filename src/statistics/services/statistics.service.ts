@@ -40,4 +40,19 @@ export class StatisticsService {
       },
     };
   }
+
+  public async getParties() {
+    const { aggregations } = await this.elasticsearchService.search({
+      index: politiciansIndex,
+      size: 0,
+      aggs: {
+        parties: {
+          terms: {
+            field: 'partyFilter.keyword',
+          },
+        },
+      },
+    });
+    return aggregations['parties']['buckets'];
+  }
 }
