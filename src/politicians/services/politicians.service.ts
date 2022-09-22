@@ -147,29 +147,60 @@ export class PoliticiansService {
     const { party, gender, fullName, skip, take } = searchPoliticiansDto;
 
     let must;
-
-    if (fullName) {
-      must = {
-        match: {
-          fullName: {
-            query: fullName,
-            fuzziness: 'auto',
+    const queries = [fullName, party].filter(Boolean);
+    if (queries.length > 0) {
+      if (queries.length > 1) {
+        must = [
+          {
+            match: {
+              fullName: fullName
+                ? {
+                    query: fullName,
+                    fuzziness: 'auto',
+                  }
+                : undefined,
+            },
           },
-        },
-      };
+          {
+            match: {
+              partyFilter: party
+                ? {
+                    query: `*${party.toLowerCase()}*`,
+                  }
+                : undefined,
+            },
+          },
+        ];
+      } else {
+        must = {
+          match: fullName
+            ? {
+                fullName: {
+                  query: fullName,
+                  fuzziness: 'auto',
+                },
+              }
+            : {
+                partyFilter: {
+                  query: `*${party.toLowerCase()}*`,
+                },
+              },
+        };
+      }
     } else {
       must = { match_all: {} };
     }
 
     let query;
 
-    if ([party, gender].filter(Boolean).length > 0) {
+    const hasFilters = [gender].filter(Boolean).length > 0;
+
+    if (hasFilters) {
       query = {
         bool: {
           must,
           filter: {
             term: {
-              party: party ? party.toLowerCase() : undefined,
               gender: gender ? gender.toLowerCase() : undefined,
             },
           },
@@ -204,7 +235,7 @@ export class PoliticiansService {
       index: politiciansIndex,
       query: {
         match: {
-          id,
+          _id: id,
         },
       },
     });

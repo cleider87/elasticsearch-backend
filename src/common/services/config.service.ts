@@ -8,7 +8,7 @@ export class ConfigService {
   }
 
   get portToListen() {
-    return this.get('PORT') || 3000;
+    return this.get('PORT') || 3001;
   }
 
   get(key: string): string {

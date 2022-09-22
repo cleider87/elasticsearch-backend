@@ -27,6 +27,15 @@ export class PoliticiansController {
     return this.politiciansService.create(politician);
   }
 
+  @Get(':id')
+  @ApiOperation({
+    description: 'Get politician by id',
+  })
+  public async searchById(@Param('id') id: string) {
+    console.log(id);
+    return this.politiciansService.getById(id);
+  }
+
   @Get()
   @ApiOperation({
     description: 'List of politicians',
@@ -37,14 +46,6 @@ export class PoliticiansController {
     @Query() searchPoliticiansDto: SearchPoliticiansDto,
   ): Promise<PageDto<Politician>> {
     return this.politiciansService.searchElastic(searchPoliticiansDto);
-  }
-
-  @Get(':id')
-  @ApiOperation({
-    description: 'Get politician by id',
-  })
-  public async searchById(@Param('id') id: string) {
-    return this.politiciansService.getById(id);
   }
 
   @Patch(':id')
