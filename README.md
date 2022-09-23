@@ -1,15 +1,12 @@
 # Elasticsearch Service
 
-## Description
-
-
-## Installation
+## Instalar
 
 ```bash
 $ npm install
 ```
 
-## Running the app
+## Ejecutar la aplicación
 
 ```bash
 # development
@@ -22,7 +19,14 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Ejecutar la aplicación completa con docker (frontend, backend y servicios)
+
+```bash
+# development
+$ docker-compose up
+```
+
+## Pruebas
 
 ```bash
 # unit tests

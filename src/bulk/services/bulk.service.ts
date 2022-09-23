@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 import * as csv from 'csv-parser';
 import * as fs from 'fs';
-import { PoliticiansService } from '../../politicians/services/politicians.service';
 import { politiciansIndex } from '../../politicians/constants/politicians.constant';
 import { Politician } from '../../politicians/entities/politician.entity';
 import { PoliticianMapping } from '../dtos/politician-mapping.dto';
 
 @Injectable()
 export class BulkService {
-  constructor(private readonly politiciansService: PoliticiansService) {}
+  constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
   async processCSV(file: Express.Multer.File) {
     const castAmount = (amount) =>
@@ -71,7 +71,17 @@ export class BulkService {
         }
       })
       .on('end', async () => {
-        this.politiciansService.bulkCreate(politicians);
+        this.bulkCreate(politicians);
       });
+  }
+
+  public async bulkCreate(politicians) {
+    const { errors, took } = await this.elasticsearchService.bulk({
+      operations: politicians,
+    });
+    if (errors) {
+      return false;
+    }
+    return took;
   }
 }

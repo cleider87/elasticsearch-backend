@@ -1,6 +1,24 @@
-version: "3.7"
+version: "3"
 
 services:
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.1
+    environment:
+      - node.name=elasticsearch
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 9200:9200
+      - 9300:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elastic
+
   kibana:
     container_name: kibana
     image: docker.elastic.co/kibana/kibana:8.4.1
@@ -14,16 +32,34 @@ services:
       - 5601:5601
     networks:
       - elastic
-  elasticsearch:
-    container_name: elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.1
-    environment:
-      - node.name=elasticsearch
-      - xpack.security.enabled=false
-      - "discovery.type=single-node"
+
+  politicians-api:
+    build:
+      context: .
+    container_name: politicians-api
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "3001:3001"
+    links:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_NODE=http://elasticsearch:9200
+      - ELASTICSEARCH_INDEX=politicians
+      - ELASTICSEARCH_USERNAME=elastic-dev
+      - ELASTICSEARCH_PASSWORD=admin
+    networks:
+      - elastic
+    command: npm run start
+
+  politicians-webapp:
+    container_name: politicians-webapp
+    image: cleider87/politicians-frontend:latest
+    environment:
+      API: '["http://politicians-api:3001"]'
+    depends_on:
+      - politicians-api
+    ports:
+      - "3000:3000"
+    command: yarn start
     networks:
       - elastic
 
