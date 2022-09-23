@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:lts-alpine
 
 WORKDIR /app
 
@@ -10,6 +10,6 @@ RUN npm install --no-package-lock
 
 COPY . /app/
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["npm", "run", "start:prod"]

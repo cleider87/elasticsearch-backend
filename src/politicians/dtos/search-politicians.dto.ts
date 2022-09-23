@@ -6,7 +6,7 @@ export class SearchPoliticiansDto extends PageOptionsDto {
   @ApiProperty({ description: 'fullName', required: false })
   @IsOptional()
   @IsString()
-  @MinLength(3)
+  @MinLength(2)
   public fullName?: string;
 
   @ApiProperty({ description: 'party', required: false })
