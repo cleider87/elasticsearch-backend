@@ -1,12 +1,15 @@
 # Elasticsearch Service
 
-## Instalar
+## Description
+
+
+## Installation
 
 ```bash
 $ npm install
 ```
 
-## Ejecutar la aplicación
+## Running the app
 
 ```bash
 # development
@@ -25,8 +28,10 @@ $ npm run start:prod
 # development
 $ docker-compose up
 ```
+* Luego se puede entrar al front del swagger en http://localhost:3001/api/docs
+ * El frontend en http://localhost:3000
 
-## Pruebas
+## Pruebas Unitarias
 
 ```bash
 # unit tests
