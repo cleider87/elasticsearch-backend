@@ -1,15 +1,12 @@
 # Elasticsearch Service
 
-## Description
 
-
-## Installation
+## Instalación
 
 ```bash
 $ npm install
 ```
-
-## Running the app
+## Ejecutar la aplicación
 
 ```bash
 # development
